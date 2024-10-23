@@ -1,2 +1,2 @@
-um repositorio de jogo da forca!
-desenvolvido por Ryan e Kenned
+Um repositorio de jogo da forca!
+Desenvolvido por Ryan e Kenned
