@@ -1,6 +1,3 @@
-import pygame
-import random
-
 pygame.init()
 
 largura, altura = 800, 600
@@ -9,6 +6,9 @@ pygame.display.set_caption("Jogo da Forca")
 
 branco = (255, 255, 255)
 preto = (0, 0, 0)
+
+imagens_forca = [pygame.image.load(f'forca_{i}.png') for i in range(7)]
+
 
 palavras = [
     'abacaxi', 'abacate', 'amarelo', 'amor', 'aviao', 'artista', 'alface', 'avó', 'água', 'ato',
@@ -51,7 +51,7 @@ mensagens_intro = [
 tela.fill(branco)
 for i, mensagem in enumerate(mensagens_intro):
     texto_intro = fonte.render(mensagem, True, preto)
-    tela.blit(texto_intro, (50, altura // 2 - 100 + i * 50))  # Espaçamento ajustado
+    tela.blit(texto_intro, (50, altura // 2 - 100 + i * 50))
 pygame.display.flip()
 
 pygame.time.wait(10000)
@@ -122,5 +122,60 @@ if 'mensagem' in locals():
     tela.blit(texto_final, (50, altura // 2))
     pygame.display.flip()
     pygame.time.wait(3000)
+    tela.fill(branco)
+   
+    for i, mensagem in enumerate(mensagens_intro):
+        texto_intro = fonte.render(mensagem, True, preto)
+        tela.blit(texto_intro, (50, altura // 2 - 100 + i * 50))
+    pygame.display.flip()
+
+    pygame.time.wait(10000)
+
+    def mostrar_palavra():
+        exibicao = ''
+        for letra in palavra:
+            if letra in letras_adivinhadas:
+                exibicao += letra + ' '
+            else:
+                exibicao += '_ '
+        return exibicao.strip()
+
+    executando = True
+    clock = pygame.time.Clock()
+
+    while executando:
+        tela.fill(branco)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                executando = False
+            elif evento.type == pygame.KEYDOWN:
+                if evento.unicode.isalpha() and len(evento.unicode) == 1:
+                    letra = evento.unicode.lower()
+                    if letra not in letras_adivinhadas:
+                        letras_adivinhadas.append(letra)
+                        if letra not in palavra:
+                            tentativas -= 1
+                            if pontos >= 100:
+                                tentativas -= 1
+                        else:
+                            pontos += 1
+
+     
+        tela.blit(imagens_forca[tentativas], (largura // 2 - 100, altura // 2 - 100))
+
+        texto_palavra = fonte.render(mostrar_palavra(), True, preto)
+        tela.blit(texto_palavra, (50, altura // 2 + 100))
+
+        pygame.display.flip()
+        clock.tick(60)
+
+   
+    if 'mensagem' in locals():
+        texto_final = fonte.render(mensagem, True, preto)
+        tela.fill(branco)
+        tela.blit(texto_final, (50, altura // 2))
+        pygame.display.flip()
+        pygame.time.wait(3000)
 
 pygame.quit()
